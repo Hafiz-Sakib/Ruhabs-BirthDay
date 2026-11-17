@@ -11,6 +11,8 @@
   "dir": "ltr",
   "background_color": "#FFF8EC",
   "theme_color": "#FFF8EC",
+  "prefer_related_applications": false,
+  "related_applications": [{ "platform": "webapp", "url": "/manifest.webmanifest" }],
   "categories": ["lifestyle", "photo"],
   "icons": [
     { "src": "/icons/icon-48.png", "sizes": "48x48", "type": "image/png", "purpose": "any" },

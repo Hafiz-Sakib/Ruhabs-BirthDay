@@ -9,15 +9,31 @@ const standalone = () =>
   typeof window !== "undefined" &&
   (window.matchMedia?.("(display-mode: standalone)").matches || window.navigator.standalone === true);
 
+/* Remember "installed" so the button stays hidden when the page is opened in a normal browser tab later. */
+const KEY = "pwa-installed";
+const remembered = () => { try { return localStorage.getItem(KEY) === "1"; } catch { return false; } };
+const remember = () => { try { localStorage.setItem(KEY, "1"); } catch { /* private mode */ } };
+const forget = () => { try { localStorage.removeItem(KEY); } catch { /* private mode */ } };
+
 let deferred = null;
-let state = { canPrompt: false, installed: standalone() };
+const isIn = standalone();
+if (isIn) remember();
+let state = { canPrompt: false, installed: isIn || remembered() };
 const listeners = new Set();
 const set = (patch) => { state = { ...state, ...patch }; listeners.forEach((l) => l()); };
 
 if (typeof window !== "undefined") {
-  window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; set({ canPrompt: true }); });
-  window.addEventListener("appinstalled", () => { deferred = null; set({ canPrompt: false, installed: true }); });
-  window.matchMedia?.("(display-mode: standalone)").addEventListener?.("change", () => set({ installed: standalone() }));
+  /* The browser only offers an install prompt when the app is NOT installed, so a prompt means "not installed" (e.g. it was uninstalled). */
+  window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); deferred = e; forget(); set({ canPrompt: true, installed: false }); });
+  window.addEventListener("appinstalled", () => { deferred = null; remember(); set({ canPrompt: false, installed: true }); });
+  window.matchMedia?.("(display-mode: standalone)").addEventListener?.("change", () => {
+    if (standalone()) remember();
+    set({ installed: standalone() || remembered() });
+  });
+  /* Chrome / Edge: ask the browser if this web app is already installed (uses related_applications in the manifest). */
+  navigator.getInstalledRelatedApps?.().then((apps) => {
+    if (apps?.some((a) => a.platform === "webapp")) { remember(); set({ installed: true }); }
+  }).catch(() => {});
 }
 
 const subscribe = (cb) => { listeners.add(cb); return () => listeners.delete(cb); };
