@@ -3,13 +3,13 @@ import { motion } from "framer-motion";
 import { Confetti } from "./Confetti";
 
 const KEY = "ruhab-landing-intro-v1";
-// Timeline (ms). Texts are shown for 6 seconds in total, the gold confetti falls for 10 seconds in total,
-// so the last 4 seconds of confetti fall over the gallery itself.
+// Timeline (ms). Texts are shown for 3 seconds in total, the gold confetti falls for 3 seconds in total,
+// the leftover pieces finish falling over the page.
 const LINES = ["Congratulations!", "Happy Birthday Ruhab!"];
-const SECOND_LINE_AT = 2000; // "Congratulations!" for 2s, then "Happy Birthday Ruhab!"
-const TEXT_END = 6000;       // white screen + texts fade away here (6s total)
-const CONFETTI_MS = 10000;   // confetti keeps falling from the top until here
-const TYPE_MS = 80;          // delay between typed letters
+const SECOND_LINE_AT = 1300; // "Congratulations!" first, then "Happy Birthday Ruhab!"
+const TEXT_END = 2500;       // white screen + texts start fading here; gone by 3s total
+const CONFETTI_MS = 3000;    // confetti keeps falling from the top until here
+const TYPE_MS = 50;          // delay between typed letters
 
 // Production: shows only on the very first visit of a person (remembered in localStorage).
 // `npm run dev` (localhost): shows on EVERY reload so you can test it. Add ?intro to any URL to force it again.
@@ -48,10 +48,10 @@ export function Intro({ onDone }) {
     return () => clearTimeout(t);
   }, [count, text, reduce]);
 
-  // switch to line 2 at 2s, fade everything at 6s
+  // switch to line 2 at 1.3s, fade everything at 2.5s
   useEffect(() => {
-    const a = setTimeout(() => { setLine(1); setCount(0); }, reduce ? 800 : SECOND_LINE_AT);
-    const b = setTimeout(() => setFade(true), reduce ? 2400 : TEXT_END);
+    const a = setTimeout(() => { setLine(1); setCount(0); }, reduce ? 600 : SECOND_LINE_AT);
+    const b = setTimeout(() => setFade(true), reduce ? 1800 : TEXT_END);
     return () => { clearTimeout(a); clearTimeout(b); };
   }, [reduce]);
 
@@ -63,7 +63,7 @@ export function Intro({ onDone }) {
         className={`fixed inset-0 z-[100] grid place-items-center bg-surface px-4 text-ink ${faded ? "pointer-events-none" : ""}`}
         initial={{ opacity: 1 }}
         animate={{ opacity: fade ? 0 : 1 }}
-        transition={{ duration: fade ? 0.7 : 0, ease: "easeIn" }}
+        transition={{ duration: fade ? 0.5 : 0, ease: "easeIn" }}
         onAnimationComplete={() => { if (fade) { setFaded(true); mark("fade"); } }}
         role="status"
         aria-label={text}

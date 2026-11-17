@@ -82,12 +82,12 @@ export default function App() {
           {!still && [["8%", "18%", 0], ["88%", "10%", 1.2], ["16%", "62%", 2.4], ["84%", "58%", 0.6]].map(([l, t, d], i) => (
             <span key={i} aria-hidden className="floaty absolute -z-0 h-3 w-3 rounded-full bg-amber-400/80" style={{ left: l, top: t, animationDelay: `${d}s` }} />
           ))}
-          <motion.p initial={still ? false : { opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: intro ? 6.2 : 0.1 }}
+          <motion.p initial={still ? false : { opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: intro ? 2.8 : 0.1 }}
             className="mx-auto inline-block rounded-full bg-amber-300/40 px-4 py-1.5 text-sm font-bold tracking-wide text-ink ring-1 ring-amber-500/30">
             🎂 {site.badge}
           </motion.p>
           <h1 className="mx-auto mt-5 max-w-3xl text-5xl font-extrabold leading-[1.02] sm:text-7xl">
-            <BlurText text={site.heroLine} accent="ONE" accentClass={gradient} delay={intro ? 6.3 : 0.2} />
+            <BlurText text={site.heroLine} accent="ONE" accentClass={gradient} delay={intro ? 2.9 : 0.2} />
           </h1>
           <Reveal delay={0.3}><p className="mx-auto mt-5 max-w-xl text-base text-ink/70 sm:text-xl">{site.tagline}</p></Reveal>
 
