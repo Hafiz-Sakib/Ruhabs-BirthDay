@@ -29,4 +29,13 @@ To add one: put both files there, add a line in `src/photos.js`, then add its id
 ## Parts
 - Hero with tilt photo cards, rolling-digit countdown (to 15 Dec, Bangladesh time)
 - Story chapters, tilt carousel (from motion-brew), Mama message, party card with "Add to calendar", day/night switch
-# Ruhabs-BirthDay
+
+## New in v2 (all in `src/components/sections.jsx`, text in `src/site.js`)
+1. **Flip words**: "Ruhab is our little [tiger / giggler / crawler...]" flips letter by letter (`flipWords`)
+2. **Then & Now**: drag-to-compare slider, newborn vs almost one (`thenLabel`, `nowLabel`)
+3. **Timeline of firsts**: line fills while you scroll (`milestones`)
+4. **Favourites bento**: photo grid of his favourite things (`favourites`)
+5. **Memory game**: flip cards, find the matching photos (`memoryIds`)
+6. **Blessings**: avatars with a filling ring, words rise out of blur (`blessings`)
+7. **RSVP card**: clock sweeps to party time, yes/no pill, rolling guest counter. Set `rsvpPhone` in `site.js` so the button opens WhatsApp; empty = copies the reply.
+Extras: scroll progress bar, magnetic buttons, 11 new photos (`born-*`, `play-*`) added to the story.

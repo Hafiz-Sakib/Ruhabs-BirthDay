@@ -39,6 +39,17 @@ const P = [
   ["n-crawl", 1932, 2576, "Ruhab crawling and grinning under a chair"],
   ["n-tummy-vest", 1932, 2576, "Ruhab on his tummy, reaching out"],
   ["n-chain", 1932, 1480, "Ruhab sitting up, holding a toy high"],
+  ["born-hold", 1125, 1500, "Newborn Ruhab wrapped in an orange kantha, held in the hospital corridor"],
+  ["born-orange", 1125, 1500, "Tiny newborn Ruhab asleep in an orange kantha and blue cap"],
+  ["born-orange-close", 1125, 1500, "Close-up of newborn Ruhab sleeping in orange"],
+  ["born-yellow-hood", 1125, 1500, "Newborn Ruhab in a yellow hood, wide awake with big eyes"],
+  ["born-sleep-black", 1125, 1500, "Ruhab sleeping soundly with a full head of black hair"],
+  ["play-onion", 960, 1280, "Ruhab grinning beside a basket of onions and garlic"],
+  ["play-net", 1125, 1500, "Ruhab playing peek-a-boo under a yellow mosquito net"],
+  ["play-tummy-floor", 1125, 1500, "Ruhab on his tummy, ready to crawl across the floor"],
+  ["play-plush", 960, 1280, "Ruhab reaching out to touch a wall of panda and lion plush toys"],
+  ["play-two-little", 960, 1280, "Two little ones cuddled together in a loved one's lap"],
+  ["play-highchair", 1125, 1500, "Ruhab in his high chair munching on a slice of mango"],
 ];
 export const photos = Object.fromEntries(P.map(([id, w, h, alt]) => [id, { id, w, h, alt, src: `/photos/${id}-m.webp`, full: `/photos/${id}.webp` }]));
 export const allPhotos = P.map(([id]) => photos[id]);

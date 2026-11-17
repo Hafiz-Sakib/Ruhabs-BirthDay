@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { site, chapters } from "./site";
+import { site, chapters, milestones, favourites, memoryIds, blessings } from "./site";
 import { photos, allPhotos } from "./photos";
 import ThemeToggle from "./components/ThemeToggle";
 import { Intro, useIntro } from "./components/Intro";
 import { BlurText, Countdown, Lightbox, Reveal, TiltCard } from "./components/fx";
 import { TiltCarousel } from "./components/tilt-carousel";
 import { Balloons, Cake, Orbit, PolaroidTable, Recap } from "./components/party";
+import { Blessings, FlipWords, Favourites, MagneticButton, MemoryGame, RsvpCard, ScrollProgress, ThenNow, Timeline } from "./components/sections";
 
 const TARGET = new Date(`${site.birthday}T00:00:00+06:00`).getTime(); // Bangladesh time
 const gradient = "bg-gradient-to-r from-sky-500 via-violet-500 to-amber-400 bg-clip-text text-transparent";
@@ -44,15 +45,19 @@ export default function App() {
     { value: allPhotos.length, label: "photos in this story", color: "#38bdf8" },
     { text: "1", label: "very loved boy", color: "#8b5cf6" },
   ];
-  const orbitIds = ["newborn-awake", "newborn-yawn", "berry-face", "n-crawl", "n-outdoor-blue", "n-chain", "n-tummy-yellow", "n-tummy-vest", "red-curtain-stand", "call-laugh"];
-  const tableIds = ["n-flower-ear", "newborn-sleep", "n-grandpa", "eid-salami", "n-green-mama", "train-window", "n-family-floor", "bus-smile", "n-sherwani", "smile-pink", "n-garden-couple"];
+  const orbitIds = ["newborn-awake", "newborn-yawn", "berry-face", "n-crawl", "n-outdoor-blue", "play-highchair", "n-tummy-yellow", "n-tummy-vest", "red-curtain-stand", "born-yellow-hood"];
+  const tableIds = ["n-flower-ear", "newborn-sleep", "n-grandpa", "eid-salami", "n-green-mama", "train-window", "n-family-floor", "play-plush", "n-sherwani", "smile-pink", "n-garden-couple"];
   const hero = ["newborn-awake", "berry-face", "red-curtain-stand"].map((id) => photos[id]);
+  const miles = milestones.map((m) => ({ ...m, photo: photos[m.photo] }));
+  const favs = favourites.map((f) => ({ ...f, photo: photos[f.photo] }));
+  const memory = memoryIds.map((id) => photos[id]);
   const rot = ["-rotate-6 translate-y-4", "z-10 scale-110", "rotate-6 translate-y-4"];
 
   return (
     <>
       {intro && <Intro onDone={introDone} />}
 
+      <ScrollProgress />
       <header className="sticky top-0 z-40 border-b border-ink/5 bg-mist/70 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
           <a href="#top" className="flex items-center gap-2.5 font-display text-lg font-bold">
@@ -60,9 +65,11 @@ export default function App() {
             {site.name} <span className={gradient}>· 1</span>
           </a>
           <nav className="flex items-center gap-4 text-sm font-semibold">
+            <a href="#firsts" className="hidden text-ink/70 hover:text-ink md:inline">Firsts</a>
             <a href="#story" className="hidden text-ink/70 hover:text-ink sm:inline">Story</a>
             <a href="#play" className="hidden text-ink/70 hover:text-ink sm:inline">Play</a>
             <a href="#party" className="hidden text-ink/70 hover:text-ink sm:inline">Party</a>
+            <a href="#rsvp" className="hidden text-ink/70 hover:text-ink md:inline">RSVP</a>
             <ThemeToggle />
           </nav>
         </div>
@@ -91,9 +98,14 @@ export default function App() {
             ))}
           </div>
 
-          <a href="#countdown" className="mt-10 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-bold text-mist shadow-lg transition hover:scale-105">
+          <MagneticButton onClick={() => document.getElementById("countdown")?.scrollIntoView({ behavior: "smooth" })} className="mt-10 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-bold text-mist shadow-lg">
             See the countdown <span aria-hidden>↓</span>
-          </a>
+          </MagneticButton>
+        </section>
+
+        {/* NEW 1: FLIP WORDS */}
+        <section className="mx-auto max-w-5xl px-5 py-8">
+          <Reveal><FlipWords prefix={site.flipPrefix} words={site.flipWords} /></Reveal>
         </section>
 
         {/* COUNTDOWN */}
@@ -111,6 +123,15 @@ export default function App() {
             
           </div>
           <Recap stats={stats} />
+        </section>
+
+        {/* NEW 3: TIMELINE */}
+        <section id="firsts" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16">
+          <div className="mb-12 text-center">
+            <h2 className="text-4xl font-extrabold sm:text-6xl"><BlurText text={site.firstsTitle} accent="firsts" accentClass={gradient} /></h2>
+            <Reveal delay={0.2}><p className="mx-auto mt-3 max-w-lg text-ink/70 sm:text-lg">{site.firstsNote}</p></Reveal>
+          </div>
+          <Timeline items={miles} onOpen={openId} />
         </section>
 
         {/* STORY */}
@@ -137,6 +158,15 @@ export default function App() {
           </div>
         </section>
 
+        {/* NEW 2: THEN & NOW */}
+        <section className="mx-auto max-w-6xl px-5 py-16">
+          <div className="mb-10 text-center">
+            <h2 className="text-4xl font-extrabold sm:text-6xl"><BlurText text={site.thenNowTitle} /></h2>
+            <Reveal delay={0.2}><p className="mx-auto mt-3 max-w-lg text-ink/70 sm:text-lg">{site.thenNowNote}</p></Reveal>
+          </div>
+          <Reveal><ThenNow before={photos["born-yellow-hood"]} after={photos["play-tummy-floor"]} beforeLabel={site.thenLabel} afterLabel={site.nowLabel} onOpen={openId} /></Reveal>
+        </section>
+
         {/* ORBIT */}
         <section className="mx-auto max-w-6xl px-5 py-16">
           <div className="mb-10 text-center">
@@ -155,10 +185,28 @@ export default function App() {
           <PolaroidTable items={tableIds.map((id) => photos[id])} onOpen={openId} />
         </section>
 
+        {/* NEW 4: FAVOURITES (bento) */}
+        <section className="mx-auto max-w-6xl px-5 py-16">
+          <div className="mb-10 text-center">
+            <h2 className="text-4xl font-extrabold sm:text-6xl"><BlurText text={site.favTitle} /></h2>
+            <Reveal delay={0.2}><p className="mx-auto mt-3 max-w-lg text-ink/70 sm:text-lg">{site.favNote}</p></Reveal>
+          </div>
+          <Favourites items={favs} onOpen={openId} />
+        </section>
+
         {/* MOMENTS (tilt carousel from motion-brew) */}
         <section className="py-16">
           <h2 className="mb-6 px-5 text-center text-3xl font-extrabold sm:text-5xl">{site.momentsTitle}</h2>
           <TiltCarousel items={allPhotos.map((p) => ({ src: p.src, title: p.alt, alt: p.alt }))} cardWidth={cw} cardHeight={Math.round(cw * 1.25)} label="Photos of Ruhab" />
+        </section>
+
+        {/* NEW 5: MEMORY GAME */}
+        <section className="mx-auto max-w-6xl px-5 py-16">
+          <div className="mb-10 text-center">
+            <h2 className="text-4xl font-extrabold sm:text-6xl"><BlurText text={site.memoryTitle} /></h2>
+            <Reveal delay={0.2}><p className="mx-auto mt-3 max-w-lg text-ink/70 sm:text-lg">{site.memoryNote}</p></Reveal>
+          </div>
+          <MemoryGame items={memory} />
         </section>
 
         {/* BALLOONS */}
@@ -177,6 +225,15 @@ export default function App() {
             <Reveal delay={0.2}><p className="mx-auto mt-3 max-w-lg text-ink/70 sm:text-lg">{site.cakeNote}</p></Reveal>
           </div>
           <Cake />
+        </section>
+
+        {/* NEW 6: BLESSINGS */}
+        <section className="mx-auto max-w-5xl px-5 py-16">
+          <div className="mb-10 text-center">
+            <h2 className="text-4xl font-extrabold sm:text-6xl"><BlurText text={site.blessingsTitle} /></h2>
+            <Reveal delay={0.2}><p className="mx-auto mt-3 max-w-lg text-ink/70 sm:text-lg">{site.blessingsNote}</p></Reveal>
+          </div>
+          <Blessings items={blessings} />
         </section>
 
         {/* MAMA */}
@@ -203,6 +260,11 @@ export default function App() {
             </div>
             <a href={calendarUrl()} target="_blank" rel="noreferrer" className="mt-8 inline-flex rounded-full bg-amber-300 px-7 py-3.5 font-bold text-[#2b2108] transition hover:scale-105">Add to calendar</a>
           </Reveal>
+        </section>
+
+        {/* NEW 7: RSVP */}
+        <section id="rsvp" className="mx-auto max-w-3xl scroll-mt-20 px-5 py-10">
+          <Reveal><RsvpCard title={site.rsvpTitle} note={site.rsvpNote} date={site.badge} time={site.time} venue={site.venue} phone={site.rsvpPhone} childName={site.name} /></Reveal>
         </section>
       </main>
 
