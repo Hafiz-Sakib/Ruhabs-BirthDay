@@ -1,0 +1,55 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Figtree Variable", "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, sans-serif;
+  --color-ink: rgb(var(--ink));
+  --color-mist: rgb(var(--mist));
+  --color-surface: rgb(var(--surface));
+}
+:root { color-scheme: light; --ink: 28 24 38; --mist: 255 248 236; --surface: 255 255 255; }
+:root.dark { color-scheme: dark; --ink: 236 233 248; --mist: 14 15 26; --surface: 22 24 40; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+html, body { overflow-x: clip; }
+body { background: rgb(var(--mist)); color: rgb(var(--ink)); -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
+:focus-visible { outline: 2px solid rgb(var(--ink)); outline-offset: 3px; border-radius: 12px; }
+::selection { background: rgb(247 213 74 / .5); }
+
+/* soft party glow behind the page */
+body::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(50rem 32rem at 10% -5%, rgba(247,213,74,.28), transparent 60%),
+    radial-gradient(44rem 30rem at 100% 8%, rgba(56,189,248,.18), transparent 60%);
+}
+:root.dark body::before {
+  background:
+    radial-gradient(60rem 38rem at 12% -8%, rgba(124,108,246,.18), transparent 60%),
+    radial-gradient(48rem 32rem at 100% 105%, rgba(247,213,74,.07), transparent 60%);
+}
+
+/* day / night circle reveal (see theme.js) */
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-old(root) { z-index: 1; }
+::view-transition-new(root) { z-index: 2; }
+.theme-fade, .theme-fade *, .theme-fade *::before, .theme-fade *::after {
+  transition: background-color .45s ease, color .45s ease, border-color .45s ease, fill .45s ease, stroke .45s ease, box-shadow .45s ease !important;
+}
+
+@keyframes floaty { 0%,100% { transform: translateY(0) rotate(var(--r,0deg)); } 50% { transform: translateY(-12px) rotate(var(--r,0deg)); } }
+.floaty { animation: floaty 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .floaty { animation: none; } }
+
+/* orbit of photos */
+@keyframes spin { to { transform: rotate(360deg); } }
+.orbit-ring { animation: spin 70s linear infinite; }
+.orbit-card { animation: spin 70s linear infinite reverse; }
+.orbit:hover .orbit-ring, .orbit:hover .orbit-card { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .orbit-ring, .orbit-card { animation: none; } }
+@keyframes bob { 0%,100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-14px) rotate(2deg); } }
+.bob { animation: bob 4.5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .bob { animation: none; } }
