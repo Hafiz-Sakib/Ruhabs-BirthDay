@@ -33,14 +33,13 @@ export function Reveal({ children, className = "", delay = 0 }) {
   );
 }
 
-/* A card that tips toward the pointer and catches a glare (idea: motion-brew "Tilt card"). */
+/* A card that tips toward the pointer (no glare, idea: motion-brew "Tilt card"). */
 export function TiltCard({ children, className = "", max = 9, onClick, label }) {
   const still = !!useReducedMotion();
   const ref = useRef(null);
   const px = useMotionValue(0.5), py = useMotionValue(0.5);
   const sx = useSpring(px, { stiffness: 220, damping: 20 }), sy = useSpring(py, { stiffness: 220, damping: 20 });
   const rx = useTransform(sy, [0, 1], [max, -max]), ry = useTransform(sx, [0, 1], [-max, max]);
-  const glare = useTransform([sx, sy], ([x, y]) => `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,.35), transparent 55%)`);
   const move = (e) => {
     if (still || e.pointerType === "touch") return;
     const r = ref.current.getBoundingClientRect();
@@ -58,7 +57,6 @@ export function TiltCard({ children, className = "", max = 9, onClick, label }) 
         className={`relative overflow-hidden rounded-3xl shadow-[0_18px_50px_-18px_rgba(40,30,70,.45)] ring-1 ring-ink/10 ${onClick ? "cursor-zoom-in" : ""}`}
       >
         {children}
-        <motion.span aria-hidden className="pointer-events-none absolute inset-0" style={{ background: glare }} />
       </motion.div>
     </div>
   );
