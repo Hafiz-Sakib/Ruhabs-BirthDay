@@ -61,16 +61,21 @@ ruhab-landing/
 ├── docs/
 │   └── screenshot.png          # preview image used in this README
 ├── public/
-│   ├── favicon.svg             # site icon (also used in the header logo)
-│   ├── favicon.ico
+│   ├── manifest.webmanifest    # PWA manifest (name, colours, icons, shortcuts)
+│   ├── sw.js                   # service worker: offline page + cached photos
+│   ├── favicon.ico             # favicon + PWA icons are all made from the birthday logo
+│   ├── favicon-16.png
 │   ├── favicon-32.png
 │   ├── apple-touch-icon.png
+│   ├── icons/                  # icon-48 ... icon-512 (any) and maskable-192/512
 │   └── photos/                 # 49 photos x 2 sizes = 98 .webp files
 │       ├── <id>.webp           #   big version, used by the photo viewer
 │       └── <id>-m.webp         #   medium version, used on the page
 ├── src/
 │   ├── main.jsx                # entry: fonts + renders <App />
 │   ├── App.jsx                 # page layout: all sections in order
+│   ├── route.js                # clean URLs: /firsts /story /play /party /reel
+│   ├── pwa.js                  # install-prompt state for the Install button
 │   ├── site.js                 # ALL the text, chapters, milestones, captions
 │   ├── photos.js               # photo list (id, size, alt text)
 │   ├── theme.js                # day / night logic (circle reveal animation)

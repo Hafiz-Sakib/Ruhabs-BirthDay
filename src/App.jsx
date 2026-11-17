@@ -3,6 +3,8 @@ import { motion, useReducedMotion } from "framer-motion";
 import { site, chapters, milestones, favourites, reel, panels, blessings } from "./site";
 import { photos, allPhotos } from "./photos";
 import ThemeToggle from "./components/ThemeToggle";
+import InstallButton from "./components/InstallButton";
+import { navClick, startSectionRouting } from "./route";
 import { Intro, useIntro } from "./components/Intro";
 import { BlurText, Countdown, Lightbox, Reveal, TiltCard } from "./components/fx";
 import { TiltCarousel } from "./components/tilt-carousel";
@@ -38,6 +40,7 @@ export default function App() {
   const still = !!useReducedMotion();
   const w = useWidth();
   const close = useCallback(() => setOpen(null), []);
+  useEffect(() => startSectionRouting(), []);
   const openId = (id) => setOpen(allPhotos.findIndex((p) => p.id === id));
   const cw = Math.max(210, Math.min(360, Math.round(w * 0.5)));
   const stats = [
@@ -61,16 +64,17 @@ export default function App() {
       <ScrollProgress />
       <header className="sticky top-0 z-40 border-b border-ink/5 bg-mist/70 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3">
-          <a href="#top" className="flex items-center gap-2.5 font-display text-lg font-bold">
-            <img src="/favicon.svg" alt="" width="32" height="32" className="h-8 w-8 rounded-[22%]" />
+          <a href="/" onClick={navClick(null)} className="flex items-center gap-2.5 font-display text-lg font-bold">
+            <img src="/icons/icon-96.png" alt="" width="32" height="32" className="h-8 w-8 object-contain" />
             {site.name} <span className={gradient}>· 1</span>
           </a>
           <nav className="flex items-center gap-4 text-sm font-semibold">
-            <a href="#firsts" className="hidden text-ink/70 hover:text-ink md:inline">Firsts</a>
-            <a href="#story" className="hidden text-ink/70 hover:text-ink sm:inline">Story</a>
-            <a href="#play" className="hidden text-ink/70 hover:text-ink sm:inline">Play</a>
-            <a href="#party" className="hidden text-ink/70 hover:text-ink sm:inline">Party</a>
-            <a href="#reel" className="hidden text-ink/70 hover:text-ink md:inline">Reel</a>
+            <a href="/firsts" onClick={navClick("firsts")} className="hidden text-ink/70 hover:text-ink md:inline">Firsts</a>
+            <a href="/story" onClick={navClick("story")} className="hidden text-ink/70 hover:text-ink sm:inline">Story</a>
+            <a href="/play" onClick={navClick("play")} className="hidden text-ink/70 hover:text-ink sm:inline">Play</a>
+            <a href="/party" onClick={navClick("party")} className="hidden text-ink/70 hover:text-ink sm:inline">Party</a>
+            <a href="/reel" onClick={navClick("reel")} className="hidden text-ink/70 hover:text-ink md:inline">Reel</a>
+            <InstallButton />
             <ThemeToggle />
           </nav>
         </div>
