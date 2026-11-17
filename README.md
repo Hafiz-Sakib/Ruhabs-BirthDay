@@ -35,7 +35,7 @@ To add one: put both files there, add a line in `src/photos.js`, then add its id
 2. **Then & Now**: drag-to-compare slider, newborn vs almost one (`thenLabel`, `nowLabel`)
 3. **Timeline of firsts**: line fills while you scroll (`milestones`)
 4. **Favourites bento**: photo grid of his favourite things (`favourites`)
-5. **Memory game**: flip cards, find the matching photos (`memoryIds`)
+5. **Panel gallery**: hover or tap a photo and it opens wide (`panels`)
 6. **Blessings**: avatars with a filling ring, words rise out of blur (`blessings`)
-7. **RSVP card**: clock sweeps to party time, yes/no pill, rolling guest counter. Set `rsvpPhone` in `site.js` so the button opens WhatsApp; empty = copies the reply.
+7. **Story reel**: tap through photos like Instagram stories, hold to pause (`reel`)
 Extras: scroll progress bar, magnetic buttons, 11 new photos (`born-*`, `play-*`) added to the story.

@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { site, chapters, milestones, favourites, memoryIds, blessings } from "./site";
+import { site, chapters, milestones, favourites, reel, panels, blessings } from "./site";
 import { photos, allPhotos } from "./photos";
 import ThemeToggle from "./components/ThemeToggle";
 import { Intro, useIntro } from "./components/Intro";
 import { BlurText, Countdown, Lightbox, Reveal, TiltCard } from "./components/fx";
 import { TiltCarousel } from "./components/tilt-carousel";
 import { Balloons, Cake, Orbit, PolaroidTable, Recap } from "./components/party";
-import { Blessings, FlipWords, Favourites, MagneticButton, MemoryGame, RsvpCard, ScrollProgress, ThenNow, Timeline } from "./components/sections";
+import { Blessings, FlipWords, Favourites, MagneticButton, PanelGallery, ScrollProgress, StoryReel, ThenNow, Timeline } from "./components/sections";
 
 const TARGET = new Date(`${site.birthday}T00:00:00+06:00`).getTime(); // Bangladesh time
 const gradient = "bg-gradient-to-r from-sky-500 via-violet-500 to-amber-400 bg-clip-text text-transparent";
@@ -50,7 +50,8 @@ export default function App() {
   const hero = ["newborn-awake", "berry-face", "red-curtain-stand"].map((id) => photos[id]);
   const miles = milestones.map((m) => ({ ...m, photo: photos[m.photo] }));
   const favs = favourites.map((f) => ({ ...f, photo: photos[f.photo] }));
-  const memory = memoryIds.map((id) => photos[id]);
+  const reelItems = reel.map((r) => ({ ...r, photo: photos[r.photo] }));
+  const panelItems = panels.map((r) => ({ ...r, photo: photos[r.photo] }));
   const rot = ["-rotate-6 translate-y-4", "z-10 scale-110", "rotate-6 translate-y-4"];
 
   return (
@@ -69,7 +70,7 @@ export default function App() {
             <a href="#story" className="hidden text-ink/70 hover:text-ink sm:inline">Story</a>
             <a href="#play" className="hidden text-ink/70 hover:text-ink sm:inline">Play</a>
             <a href="#party" className="hidden text-ink/70 hover:text-ink sm:inline">Party</a>
-            <a href="#rsvp" className="hidden text-ink/70 hover:text-ink md:inline">RSVP</a>
+            <a href="#reel" className="hidden text-ink/70 hover:text-ink md:inline">Reel</a>
             <ThemeToggle />
           </nav>
         </div>
@@ -200,13 +201,13 @@ export default function App() {
           <TiltCarousel items={allPhotos.map((p) => ({ src: p.src, title: p.alt, alt: p.alt }))} cardWidth={cw} cardHeight={Math.round(cw * 1.25)} label="Photos of Ruhab" />
         </section>
 
-        {/* NEW 5: MEMORY GAME */}
+        {/* NEW 5: PANEL GALLERY */}
         <section className="mx-auto max-w-6xl px-5 py-16">
           <div className="mb-10 text-center">
-            <h2 className="text-4xl font-extrabold sm:text-6xl"><BlurText text={site.memoryTitle} /></h2>
-            <Reveal delay={0.2}><p className="mx-auto mt-3 max-w-lg text-ink/70 sm:text-lg">{site.memoryNote}</p></Reveal>
+            <h2 className="text-4xl font-extrabold sm:text-6xl"><BlurText text={site.panelTitle} /></h2>
+            <Reveal delay={0.2}><p className="mx-auto mt-3 max-w-lg text-ink/70 sm:text-lg">{site.panelNote}</p></Reveal>
           </div>
-          <MemoryGame items={memory} />
+          <PanelGallery items={panelItems} onOpen={openId} />
         </section>
 
         {/* BALLOONS */}
@@ -249,22 +250,26 @@ export default function App() {
 
         {/* PARTY */}
         <section id="party" className="mx-auto max-w-3xl scroll-mt-20 px-5 py-14">
-          <Reveal className="rounded-[2rem] bg-ink p-8 text-center text-mist ring-1 ring-ink/10 sm:p-12">
-            <p className="text-sm font-bold uppercase tracking-widest text-amber-300">You are invited</p>
+          <Reveal className="rounded-[2rem] bg-surface p-8 text-center text-ink shadow-[0_30px_80px_-40px_rgba(60,40,120,.5)] ring-1 ring-ink/10 sm:p-12">
+            <p className="text-sm font-bold uppercase tracking-widest text-amber-600 dark:text-amber-300">You are invited</p>
             <h2 className="mt-2 text-4xl font-extrabold sm:text-6xl">{site.partyTitle}</h2>
             <p className="mt-3 text-lg opacity-80">{site.partyNote}</p>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-base font-semibold">
-              <span className="rounded-full bg-mist/10 px-5 py-2.5">📅 {site.badge}</span>
-              {site.time && <span className="rounded-full bg-mist/10 px-5 py-2.5">🕕 {site.time}</span>}
-              {site.venue && <span className="rounded-full bg-mist/10 px-5 py-2.5">📍 {site.venue}</span>}
+              <span className="rounded-full bg-ink/5 px-5 py-2.5">📅 {site.badge}</span>
+              {site.time && <span className="rounded-full bg-ink/5 px-5 py-2.5">🕕 {site.time}</span>}
+              {site.venue && <span className="rounded-full bg-ink/5 px-5 py-2.5">📍 {site.venue}</span>}
             </div>
             <a href={calendarUrl()} target="_blank" rel="noreferrer" className="mt-8 inline-flex rounded-full bg-amber-300 px-7 py-3.5 font-bold text-[#2b2108] transition hover:scale-105">Add to calendar</a>
           </Reveal>
         </section>
 
-        {/* NEW 7: RSVP */}
-        <section id="rsvp" className="mx-auto max-w-3xl scroll-mt-20 px-5 py-10">
-          <Reveal><RsvpCard title={site.rsvpTitle} note={site.rsvpNote} date={site.badge} time={site.time} venue={site.venue} phone={site.rsvpPhone} childName={site.name} /></Reveal>
+        {/* NEW 7: STORY REEL */}
+        <section id="reel" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16">
+          <div className="mb-10 text-center">
+            <h2 className="text-4xl font-extrabold sm:text-6xl"><BlurText text={site.reelTitle} /></h2>
+            <Reveal delay={0.2}><p className="mx-auto mt-3 max-w-lg text-ink/70 sm:text-lg">{site.reelNote}</p></Reveal>
+          </div>
+          <StoryReel items={reelItems} onOpen={openId} />
         </section>
       </main>
 

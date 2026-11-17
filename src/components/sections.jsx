@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, animate, motion, useInView, useMotionValue, useReducedMotion, useScroll, useSpring } from "framer-motion";
-import { Confetti } from "./Confetti";
 
 /* New pieces, same spring-and-glide style as the rest of the site (ideas from motion-brew.com).
-   1 FlipWords   2 ThenNow   3 Timeline   4 Favourites   5 MemoryGame   6 Blessings   7 RsvpCard
+   FlipWords, ThenNow, Timeline, Favourites, Blessings, StoryReel, PanelGallery
    + ScrollProgress and MagneticButton helpers. Only framer-motion is used, no new packages. */
 
 const SPRING = { type: "spring", stiffness: 380, damping: 30 };
@@ -181,85 +180,6 @@ export function Favourites({ items, onOpen }) {
   );
 }
 
-/* ================= 5. MEMORY GAME: flip the cards, find the matching photos ================= */
-const shuffle = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
-const makeDeck = (items) => shuffle(items.flatMap((p) => [{ k: `${p.id}-a`, p }, { k: `${p.id}-b`, p }]));
-
-function MemoryCard({ card, up, matched, onFlip }) {
-  const still = !!useReducedMotion();
-  const face = "absolute inset-0 overflow-hidden rounded-2xl [backface-visibility:hidden]";
-  return (
-    <div style={{ perspective: 800 }} className="aspect-[3/4]">
-      <motion.button type="button" onClick={onFlip} aria-label={up ? card.p.alt : "Hidden card, tap to flip"} aria-pressed={up}
-        className={`relative block h-full w-full cursor-pointer rounded-2xl outline-none ${matched ? "ring-4 ring-amber-300" : ""}`} style={{ transformStyle: "preserve-3d" }}
-        initial={false} animate={{ rotateY: up ? 180 : 0, scale: matched ? 1.03 : 1 }} transition={still ? { duration: 0 } : { type: "spring", stiffness: 220, damping: 22 }} whileTap={still ? undefined : { scale: 0.96 }}>
-        <span className={`${face} grid place-items-center bg-gradient-to-br from-violet-500 via-sky-500 to-amber-400 shadow-[0_12px_28px_-12px_rgba(40,30,70,.6)]`}>
-          <span aria-hidden className="font-display text-5xl font-extrabold text-white/90 sm:text-6xl">1</span>
-          <span aria-hidden className="absolute inset-2 rounded-xl border-2 border-dashed border-white/50" />
-        </span>
-        <span className={face} style={{ transform: "rotateY(180deg)" }}>
-          <img src={card.p.src} alt="" draggable={false} loading="lazy" className="h-full w-full object-cover" style={{ objectPosition: "50% 30%" }} />
-        </span>
-      </motion.button>
-    </div>
-  );
-}
-
-export function MemoryGame({ items }) {
-  const [deck, setDeck] = useState(() => makeDeck(items));
-  const [open, setOpen] = useState([]);
-  const [matched, setMatched] = useState([]);
-  const [moves, setMoves] = useState(0);
-  const [best, setBest] = useState(null);
-  const [round, setRound] = useState(0);
-  const lock = useRef(false);
-  const timer = useRef(null);
-  useEffect(() => () => clearTimeout(timer.current), []);
-  const won = matched.length === items.length;
-  const flip = (i) => {
-    if (lock.current || open.includes(i) || matched.includes(deck[i].p.id) || won) return;
-    const next = [...open, i];
-    setOpen(next);
-    if (next.length < 2) return;
-    const m = moves + 1;
-    setMoves(m);
-    const [a, b] = next.map((x) => deck[x].p.id);
-    if (a === b) {
-      setMatched((x) => [...x, a]); setOpen([]);
-      if (matched.length + 1 === items.length) setBest((v) => (v == null ? m : Math.min(v, m)));
-    } else {
-      lock.current = true;
-      timer.current = setTimeout(() => { setOpen([]); lock.current = false; }, 850);
-    }
-  };
-  const restart = () => { clearTimeout(timer.current); lock.current = false; setDeck(makeDeck(items)); setOpen([]); setMatched([]); setMoves(0); setRound((r) => r + 1); };
-  return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-5 flex items-center justify-center gap-3 text-sm font-bold">
-        <span className="rounded-full bg-surface px-4 py-2 ring-1 ring-ink/10">Moves: <span className="tabular-nums">{moves}</span></span>
-        <span className="rounded-full bg-surface px-4 py-2 ring-1 ring-ink/10">Found: <span className="tabular-nums">{matched.length}/{items.length}</span></span>
-        {best != null && <span className="rounded-full bg-amber-300/50 px-4 py-2 ring-1 ring-amber-500/30">Best: {best}</span>}
-      </div>
-      <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-4">
-        {deck.map((c, i) => <MemoryCard key={`${round}-${c.k}`} card={c} up={open.includes(i) || matched.includes(c.p.id)} matched={matched.includes(c.p.id)} onFlip={() => flip(i)} />)}
-      </div>
-      <div className="mt-6 min-h-[4.5rem] text-center" aria-live="polite">
-        <AnimatePresence mode="wait">
-          {won ? (
-            <motion.p key="won" initial={{ opacity: 0, y: 16, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0 }} className="font-display text-2xl font-extrabold">
-              🎉 You found them all in {moves} moves!
-            </motion.p>
-          ) : (
-            <motion.p key="play" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-ink/60">Tap two cards. Match the same photo.</motion.p>
-          )}
-        </AnimatePresence>
-        <button type="button" onClick={restart} className="mt-3 rounded-full bg-ink px-6 py-2.5 text-sm font-bold text-mist transition hover:scale-105">{won ? "Play again" : "Shuffle"}</button>
-      </div>
-      {won && <Confetti key={`c${round}`} duration={3200} />}
-    </div>
-  );
-}
-
 /* ================= 6. BLESSINGS: avatars with a filling ring, quotes rise out of a blur ================= */
 const RING_R = 26, RING_C = 2 * Math.PI * RING_R;
 export function Blessings({ items, seconds = 7 }) {
@@ -307,131 +227,93 @@ export function Blessings({ items, seconds = 7 }) {
   );
 }
 
-/* ================= 7. RSVP: clock sweeps to the party time, gliding yes/no pill, rolling guest counter ================= */
-const parseTime = (t) => {
-  const m = /(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i.exec(t || "");
-  if (!m) return { h: 6, min: 0, known: false };
-  let h = Number(m[1]) % 12; const min = Number(m[2] || 0);
-  if ((m[3] || "").toLowerCase() === "pm") h += 12;
-  return { h, min, known: true };
-};
-
-function Clock({ time }) {
+/* ================= STORY REEL: tap through photos like Instagram stories (tap sides, hold to pause) ================= */
+export function StoryReel({ items, seconds = 4.5, onOpen }) {
   const still = !!useReducedMotion();
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-15%" });
-  const { h, min } = parseTime(time);
-  const hourDeg = (h % 12) * 30 + min * 0.5, minDeg = min * 6;
-  const hand = (deg, len, w, color) => (
-    <motion.line x1="50" y1="50" x2="50" y2={50 - len} stroke={color} strokeWidth={w} strokeLinecap="round" style={{ originX: 0.5, originY: 1 }}
-      initial={{ rotate: still ? deg : 0 }} animate={{ rotate: inView ? deg + 360 : 0 }} transition={still ? { duration: 0 } : { duration: 2.2, ease: [0.3, 0.7, 0.2, 1] }} />
-  );
+  const box = useRef(null);
+  const inView = useInView(box, { margin: "-15%" });
+  const [i, setI] = useState(0);
+  const [p, setP] = useState(0);
+  const [hold, setHold] = useState(false);
+  const n = items.length;
+  const go = (d) => { setI((x) => (x + d + n) % n); setP(0); };
+  useEffect(() => {
+    if (still || hold || !inView) return;
+    let raf, last = performance.now();
+    const tick = (t) => {
+      const dt = (t - last) / 1000; last = t;
+      setP((v) => {
+        const nv = v + dt / seconds;
+        if (nv >= 1) { setI((x) => (x + 1) % n); return 0; }
+        return nv;
+      });
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [still, hold, inView, n, seconds]);
+  const cur = items[i];
   return (
-    <svg ref={ref} viewBox="0 0 100 100" className="h-28 w-28 shrink-0" role="img" aria-label={time ? `Party starts at ${time}` : "Party time coming soon"}>
-      <circle cx="50" cy="50" r="46" className="fill-surface stroke-ink/15" strokeWidth="3" />
-      {Array.from({ length: 12 }).map((_, k) => <line key={k} x1="50" y1="9" x2="50" y2={k % 3 === 0 ? 16 : 13} className="stroke-ink/40" strokeWidth={k % 3 === 0 ? 2.5 : 1.5} strokeLinecap="round" transform={`rotate(${k * 30} 50 50)`} />)}
-      {hand(hourDeg, 22, 4, "#f59e0b")}
-      {hand(minDeg, 32, 3, "#8b5cf6")}
-      <circle cx="50" cy="50" r="3.5" className="fill-ink" />
-    </svg>
-  );
-}
-
-function Stepper({ value, onChange, min = 1, max = 10 }) {
-  const dir = useRef(1);
-  const go = (d) => { dir.current = d; onChange(Math.min(max, Math.max(min, value + d))); };
-  const b = "grid h-11 w-11 place-items-center rounded-full bg-ink text-xl font-bold text-mist transition hover:scale-110 disabled:opacity-30 disabled:hover:scale-100";
-  return (
-    <div className="inline-flex items-center gap-4">
-      <button type="button" className={b} onClick={() => go(-1)} disabled={value <= min} aria-label="Fewer guests">−</button>
-      <div className="relative grid h-14 w-16 place-items-center overflow-hidden rounded-2xl bg-surface ring-1 ring-ink/10" aria-live="polite" aria-label={`${value} guests`}>
-        <AnimatePresence mode="popLayout" initial={false}>
-          <motion.span key={value} className="font-display text-3xl font-extrabold tabular-nums" initial={{ y: 28 * dir.current, opacity: 0, filter: "blur(4px)" }} animate={{ y: 0, opacity: 1, filter: "blur(0px)" }} exit={{ y: -28 * dir.current, opacity: 0, filter: "blur(4px)" }} transition={SPRING}>
-            {value}
-          </motion.span>
+    <div ref={box} className="mx-auto w-full max-w-xs sm:max-w-sm">
+      <div className="relative aspect-[9/16] select-none overflow-hidden rounded-[2rem] bg-black shadow-[0_30px_80px_-30px_rgba(40,30,70,.7)] ring-1 ring-ink/10"
+        onPointerDown={() => setHold(true)} onPointerUp={() => setHold(false)} onPointerLeave={() => setHold(false)} onPointerCancel={() => setHold(false)}>
+        <AnimatePresence initial={false}>
+          <motion.img key={cur.photo.id} src={cur.photo.src} alt={cur.photo.alt} draggable={false}
+            initial={{ opacity: 0, scale: 1.12 }} animate={{ opacity: 1, scale: still ? 1 : 1.0 }} exit={{ opacity: 0 }} transition={{ duration: 0.6, ease: EASE }}
+            className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: cur.pos || "50% 35%" }} />
+        </AnimatePresence>
+        <span aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/45 via-transparent to-black/70" />
+        <div className="absolute inset-x-3 top-3 flex gap-1.5" aria-hidden>
+          {items.map((_, k) => (
+            <span key={k} className="h-1 flex-1 overflow-hidden rounded-full bg-white/30">
+              <span className="block h-full origin-left rounded-full bg-white" style={{ transform: `scaleX(${k < i ? 1 : k === i ? p : 0})` }} />
+            </span>
+          ))}
+        </div>
+        <div className="absolute inset-x-0 top-7 flex items-center gap-2 px-4 text-white">
+          <span className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-amber-300 to-violet-500 font-display text-sm font-extrabold">R</span>
+          <span className="text-sm font-bold">Ruhab</span>
+          <span className="text-xs text-white/70">{i + 1} / {n}</span>
+        </div>
+        <button type="button" aria-label="Previous story" onClick={() => go(-1)} className="absolute inset-y-16 left-0 w-1/3 cursor-w-resize outline-none" />
+        <button type="button" aria-label="Next story" onClick={() => go(1)} className="absolute inset-y-16 right-0 w-2/3 cursor-e-resize outline-none" />
+        <AnimatePresence mode="wait">
+          <motion.div key={cur.photo.id} initial={{ opacity: 0, y: 18, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} exit={{ opacity: 0 }} transition={{ duration: 0.5, delay: 0.15 }}
+            className="pointer-events-none absolute inset-x-0 bottom-0 p-5 text-white">
+            <p className="font-display text-3xl font-extrabold leading-tight">{cur.title}</p>
+            <p className="mt-1 text-sm text-white/85">{cur.note}</p>
+          </motion.div>
         </AnimatePresence>
       </div>
-      <button type="button" className={b} onClick={() => go(1)} disabled={value >= max} aria-label="More guests">+</button>
+      <p className="mt-4 text-center text-sm text-ink/60">Tap the sides to move. Hold to pause.{onOpen && <> <button type="button" onClick={() => onOpen(cur.photo.id)} className="font-bold underline underline-offset-4">Open big</button></>}</p>
     </div>
   );
 }
 
-export function RsvpCard({ title, note, date, time, venue, phone, childName = "Ruhab" }) {
-  const [name, setName] = useState("");
-  const [going, setGoing] = useState(true);
-  const [guests, setGuests] = useState(2);
-  const [state, setState] = useState("form"); // form | sent
-  const [copied, setCopied] = useState(false);
-  const msg = going
-    ? `Hi! This is ${name.trim()}. We will be at ${childName}'s 1st birthday on ${date} (${guests} ${guests === 1 ? "guest" : "guests"}) 🎉`
-    : `Hi! This is ${name.trim()}. Sorry, we can't make it to ${childName}'s birthday, but sending lots of love 💛`;
-  const send = async () => {
-    if (!name.trim()) return;
-    const num = (phone || "").replace(/\D/g, "");
-    if (num) window.open(`https://wa.me/${num}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
-    else { try { await navigator.clipboard.writeText(msg); setCopied(true); } catch { /* clipboard blocked */ } }
-    setState("sent");
-  };
-  const seg = "relative z-10 flex-1 rounded-full px-5 py-2.5 text-sm font-bold transition-colors";
+/* ================= PANEL GALLERY: hover or tap a panel and it opens wide ================= */
+export function PanelGallery({ items, onOpen }) {
+  const still = !!useReducedMotion();
+  const [a, setA] = useState(0);
   return (
-    <div className="mx-auto max-w-2xl overflow-hidden rounded-[2rem] bg-surface p-6 shadow-[0_30px_80px_-40px_rgba(60,40,120,.55)] ring-1 ring-ink/10 sm:p-10">
-      <div className="flex flex-col items-center gap-5 text-center sm:flex-row sm:text-left">
-        <Clock time={time} />
-        <div>
-          <h3 className="text-3xl font-extrabold sm:text-4xl">{title}</h3>
-          <p className="mt-1 text-ink/70">{note}</p>
-          <p className="mt-2 flex flex-wrap justify-center gap-2 text-sm font-semibold sm:justify-start">
-            <span className="rounded-full bg-ink/5 px-3 py-1">📅 {date}</span>
-            <span className="rounded-full bg-ink/5 px-3 py-1">🕕 {time || "Time coming soon"}</span>
-            {venue && <span className="rounded-full bg-ink/5 px-3 py-1">📍 {venue}</span>}
-          </p>
-        </div>
-      </div>
-      <AnimatePresence mode="wait" initial={false}>
-        {state === "form" ? (
-          <motion.div key="form" exit={{ opacity: 0, y: -12 }} className="mt-8 space-y-6">
-            <label className="block text-left">
-              <span className="text-sm font-bold text-ink/70">Your name</span>
-              <input value={name} onChange={(e) => setName(e.target.value)} maxLength={40} placeholder="e.g. Rahim Uncle" autoComplete="name"
-                className="mt-1.5 w-full rounded-2xl bg-mist px-4 py-3 text-base outline-none ring-1 ring-ink/15 transition focus:ring-2 focus:ring-violet-500" />
-            </label>
-            <div role="radiogroup" aria-label="Will you come?" className="relative mx-auto flex max-w-xs rounded-full bg-mist p-1 ring-1 ring-ink/10">
-              {[[true, "Yes, I'll come 🎈"], [false, "Can't make it"]].map(([v, l]) => (
-                <button key={l} type="button" role="radio" aria-checked={going === v} onClick={() => setGoing(v)} className={`${seg} ${going === v ? "text-[#2b2108]" : "text-ink/60"}`}>
-                  {going === v && <motion.span layoutId="rsvp-pill" transition={SPRING} className="absolute inset-0 -z-10 rounded-full bg-amber-300 shadow-md" />}
-                  {l}
-                </button>
-              ))}
-            </div>
-            <AnimatePresence initial={false}>
-              {going && (
-                <motion.div key="g" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden text-center">
-                  <p className="mb-3 text-sm font-bold text-ink/70">How many of you?</p>
-                  <Stepper value={guests} onChange={setGuests} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <div className="text-center">
-              <MagneticButton onClick={send} disabled={!name.trim()} className="rounded-full bg-gradient-to-r from-sky-500 via-violet-500 to-amber-400 px-8 py-3.5 text-base font-bold text-white shadow-lg transition-opacity disabled:cursor-not-allowed disabled:opacity-40">
-                {phone ? "Send on WhatsApp" : "Copy my reply"}
-              </MagneticButton>
-              <p className="mt-2 text-xs text-ink/50">{phone ? "Opens WhatsApp with your reply ready to send." : "Your reply is copied. Paste it to Mama Sakib, Abbu or Ammu."}</p>
-            </div>
+    <div className="mx-auto flex h-[34rem] max-w-5xl flex-col gap-2 sm:h-[30rem] sm:flex-row sm:gap-3" onPointerLeave={() => {}}>
+      {items.map((it, k) => {
+        const on = k === a;
+        return (
+          <motion.div key={it.photo.id} layout role="button" tabIndex={0} aria-label={`${it.title}${on ? ": open photo" : ""}`}
+            onPointerEnter={(e) => e.pointerType === "mouse" && setA(k)} onFocus={() => setA(k)}
+            onClick={() => (on ? onOpen(it.photo.id) : setA(k))} onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), on ? onOpen(it.photo.id) : setA(k))}
+            animate={{ flexGrow: on ? 5 : 1 }} transition={still ? { duration: 0 } : { type: "spring", stiffness: 180, damping: 26 }}
+            className={`relative min-h-0 min-w-0 basis-0 overflow-hidden rounded-3xl shadow-[0_18px_40px_-22px_rgba(40,30,70,.55)] ring-1 ring-ink/10 ${on ? "cursor-zoom-in" : "cursor-pointer"}`}>
+            <img src={it.photo.src} alt={it.photo.alt} loading="lazy" decoding="async" draggable={false} className="absolute inset-0 h-full w-full object-cover" style={{ objectPosition: it.pos || "50% 35%" }} />
+            <motion.span aria-hidden animate={{ opacity: on ? 0.9 : 0.55 }} className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/5 to-black/20" />
+            <span className="absolute left-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-white/90 text-lg shadow">{it.emoji}</span>
+            <motion.span animate={{ opacity: on ? 1 : 0, y: on ? 0 : 12 }} transition={{ duration: 0.35, delay: on ? 0.12 : 0 }} className="pointer-events-none absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
+              <span className="block font-display text-2xl font-extrabold leading-tight sm:text-3xl">{it.title}</span>
+              <span className="mt-0.5 block text-sm text-white/85">{it.note}</span>
+            </motion.span>
           </motion.div>
-        ) : (
-          <motion.div key="sent" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={SPRING} className="mt-8 text-center">
-            <svg viewBox="0 0 52 52" className="mx-auto h-20 w-20" aria-hidden>
-              <circle cx="26" cy="26" r="24" fill="#10b981" />
-              <motion.path d="M14 27l8 8 16-17" fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ delay: 0.2, duration: 0.5 }} />
-            </svg>
-            <p className="mt-4 font-display text-2xl font-extrabold">{going ? "See you at the party!" : "Thank you for the love!"}</p>
-            <p className="mt-1 text-ink/70">{phone ? "Your message is ready in WhatsApp." : copied ? "Reply copied. Paste it to the family." : "Copy this reply and send it to the family:"}</p>
-            {!phone && !copied && <p className="mx-auto mt-3 max-w-sm rounded-2xl bg-mist p-3 text-sm ring-1 ring-ink/10">{msg}</p>}
-            <button type="button" onClick={() => { setState("form"); setCopied(false); }} className="mt-5 text-sm font-bold underline underline-offset-4">Edit my reply</button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      {state === "sent" && going && <Confetti duration={2800} />}
+        );
+      })}
     </div>
   );
 }

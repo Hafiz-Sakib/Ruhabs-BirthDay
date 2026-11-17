@@ -38,15 +38,14 @@ export const site = {
   favTitle: "Ruhab's favourite things",
   favNote: "Mangoes, soft toys, hiding games and anything that rolls.",
 
-  memoryTitle: "Match the memories",
-  memoryNote: "Flip the cards and find the matching photos of Ruhab.",
+  reelTitle: "Ruhab's story reel",
+  reelNote: "Tap through his little moments, just like stories.",
+
+  panelTitle: "Open the moments",
+  panelNote: "Hover a photo (or tap it) and it opens wide.",
 
   blessingsTitle: "Blessings for Ruhab",
   blessingsNote: "Little notes from the people who love him most.",
-
-  rsvpTitle: "Will you come?",
-  rsvpNote: "Tell us if you can join Ruhab's big day.",
-  rsvpPhone: "",   // e.g. 8801XXXXXXXXX (country code + number, no plus). If set, the RSVP button opens WhatsApp. Empty = copies the reply.
 
   mamaTitle: "Your Mama Sakib Loves You",
   mamaNote: "From the first tiny toes to the video-call giggles, every day with you is a gift.",
@@ -106,8 +105,25 @@ export const favourites = [
   { emoji: "😂", title: "Belly laughs", note: "Nothing beats a giggle in Grandpa's arms.", photo: "n-grandpa", pos: "50% 35%" },
 ];
 
-// 6 photos = 12 cards in the matching game
-export const memoryIds = ["born-orange-close", "play-onion", "play-net", "play-highchair", "n-flower-ear", "berry-face"];
+// Story reel (tap through). `photo` = id from src/photos.js
+export const reel = [
+  { photo: "born-orange", title: "Day one", note: "Wrapped in orange, fast asleep." },
+  { photo: "newborn-awake", title: "Wide awake", note: "Looking at the world for the first time." },
+  { photo: "eid-salami", title: "First Eid", note: "His very first Eidi.", },
+  { photo: "play-highchair", title: "Mango time", note: "A slice in each hand." },
+  { photo: "play-net", title: "Peek-a-boo", note: "Where did Ruhab go?" },
+  { photo: "berry-face", title: "Messy and happy", note: "Almost one, and full of giggles." },
+];
+
+// Panel gallery (hover to open)
+export const panels = [
+  { emoji: "👶", photo: "born-yellow-hood", title: "Hello, world", note: "Big eyes from the very first days." },
+  { emoji: "🌺", photo: "n-flower-ear", title: "Little prince", note: "A flower behind the ear." },
+  { emoji: "💪", photo: "n-tummy-yellow", title: "Tummy time", note: "Head up, hands out." },
+  { emoji: "🐛", photo: "n-crawl", title: "Crawling", note: "Under the chair, as always." },
+  { emoji: "🐼", photo: "play-plush", title: "Plush friends", note: "So many soft toys to touch." },
+  { emoji: "🚂", photo: "train-window", title: "On the go", note: "Giggling at the train window." },
+];
 
 // Blessing notes: change the words, names, roles. `color` = avatar and ring colour.
 export const blessings = [
