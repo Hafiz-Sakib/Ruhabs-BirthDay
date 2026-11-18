@@ -72,12 +72,14 @@ export const site = {
 
 // The story: chapters shown in order. `photos` are the ids from src/photos.js. Change titles/notes freely.
 export const chapters = [
-  { title: "Hello, world", note: "Tiny toes, a big yawn and the sweetest first look.", photos: ["born-hold", "born-orange", "born-orange-close", "newborn-awake", "newborn-foot", "born-yellow-hood", "newborn-yawn", "newborn-sleep", "born-sleep-black", "newborn-cry"] },
-  { title: "Meeting the family", note: "Cuddles, curious cousins and so many hands to hold him.", photos: ["first-hold", "cousins", "sleepy-boats"] },
-  { title: "Eid and first smiles", note: "His very first Eidi, and a smile that lit up the room.", photos: ["eid-salami", "mama-hug", "smile-pink"] },
-  { title: "All dressed up", note: "Smart outfits, painted walls and the biggest eyes in the room.", photos: ["n-green-mama", "n-sherwani", "n-garden-family", "n-garden-couple", "n-mural-mama", "n-mural-papa"] },
-  { title: "Tummy time and flowers", note: "Lifting his head, reaching out and wearing a flower like a prince.", photos: ["n-tummy-yellow", "n-tummy-vest", "n-flower-ear", "n-flower-wide", "n-outdoor-blue", "n-sleep"] },
-  { title: "Sitting, crawling, giggling", note: "Wherever there is a chair to crawl under, he is already there.", photos: ["n-chain", "n-crawl", "n-yellow-lap", "n-grandpa", "n-family-floor"] },
+  { title: "Hello, world", note: "Tiny toes, a big yawn and the sweetest first look.", photos: ["born-hold", "born-orange", "born-kantha", "born-orange-close", "newborn-awake", "newborn-blue", "newborn-blue-yawn", "newborn-red", "born-yellow-hood", "newborn-yawn", "newborn-sleep", "born-shoulder", "born-sleep-black", "newborn-cry"] },
+  { title: "Tiny fingers, tiny toes", note: "A grip that melts every heart and toes small enough to hold in one palm.", photos: ["newborn-finger", "newborn-toes", "newborn-fist"] },
+  { title: "Meeting the family", note: "Cuddles, curious cousins and so many hands to hold him.", photos: ["first-hold", "cousins", "born-cousins", "born-selfie", "sleepy-boats"] },
+  { title: "The first haircut", note: "A little bit of hair on a banana leaf and a brand new look.", photos: ["haircut-leaf", "haircut-bald"] },
+  { title: "Eid and first smiles", note: "His very first Eidi, and a smile that lit up the room.", photos: ["eid-salami", "mama-hug", "smile-pink", "n-shop-mama"] },
+  { title: "All dressed up", note: "Smart outfits, painted walls and the biggest eyes in the room.", photos: ["n-green-mama", "n-sherwani", "n-garden-family", "n-garden-couple", "n-mural-mama", "n-mural-papa", "n-wedding-nap"] },
+  { title: "Tummy time and flowers", note: "Lifting his head, reaching out and wearing a flower like a prince.", photos: ["n-tummy-yellow", "n-tummy-mat", "n-tummy-vest", "n-nap-flowers", "n-flower-ear", "n-flower-wide", "n-outdoor-blue", "n-sleep"] },
+  { title: "Sitting, crawling, giggling", note: "Wherever there is a chair to crawl under, he is already there.", photos: ["n-chain", "n-chain-toy", "n-crawl", "n-peek-chair", "n-yellow-lap", "n-grandpa", "n-family-floor"] },
   { title: "Mischief and mangoes", note: "Peek-a-boo under the net, plush toys, onion baskets and his very first mango.", photos: ["play-highchair", "play-net", "play-onion", "play-plush", "play-tummy-floor", "play-two-little"] },
   { title: "Little traveller", note: "Standing tall, looking out of train windows and exploring.", photos: ["red-curtain-mama", "red-curtain-stand", "train-window", "bus-smile", "train-family"] },
   { title: "Almost one", note: "A messy berry face, rooftop evenings and giggles over late-night video calls.", photos: ["berry-face", "n-garden-blue", "n-selfie", "call-smile", "call-laugh"] },

@@ -16,7 +16,7 @@ React 18 · Vite 6 · Tailwind CSS 4 · Framer Motion
 
 - **Welcome intro**: "Congratulations!" and "Happy Birthday Ruhab!" typing on a white screen with gold confetti. It lasts **3 seconds** and shows only on a visitor's first visit.
 - **Live countdown** with rolling digits, aimed at midnight of 15 Dec 2026 (Bangladesh time, UTC+6).
-- **49 photos** in a story, timeline, bento grid, orbit, polaroid table, carousel, panel gallery and story reel.
+- **67 photos** in a story, timeline, bento grid, orbit, polaroid table, carousel, panel gallery and story reel.
 - **Day / night mode** with a circular reveal animation. The page always starts in day mode.
 - **Full-screen photo viewer** (lightbox) with keyboard arrows and Esc.
 - **Fun parts**: pop balloons to read wishes, blow out the cake candle, drag the polaroids around.
@@ -68,7 +68,7 @@ ruhab-landing/
 │   ├── favicon-32.png
 │   ├── apple-touch-icon.png
 │   ├── icons/                  # icon-48 ... icon-512 (any) and maskable-192/512
-│   └── photos/                 # 49 photos x 2 sizes = 98 .webp files
+│   └── photos/                 # 67 photos x 2 sizes = 134 .webp files
 │       ├── <id>.webp           #   big version, used by the photo viewer
 │       └── <id>-m.webp         #   medium version, used on the page
 ├── src/
