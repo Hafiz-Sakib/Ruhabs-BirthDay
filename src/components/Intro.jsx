@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Confetti } from "./Confetti";
 
-const KEY = "ruhab-landing-intro-v1";
 // Timeline (ms). Texts are shown for 3 seconds in total, the gold confetti falls for 3 seconds in total,
 // the leftover pieces finish falling over the page.
 const LINES = ["Congratulations!", "Happy Birthday Ruhab!"];
@@ -11,14 +10,10 @@ const TEXT_END = 2500;       // white screen + texts start fading here; gone by 
 const CONFETTI_MS = 3000;    // confetti keeps falling from the top until here
 const TYPE_MS = 50;          // delay between typed letters
 
-// Production: shows only on the very first visit of a person (remembered in localStorage).
-// `npm run dev` (localhost): shows on EVERY reload so you can test it. Add ?intro to any URL to force it again.
+// Shows on EVERY page load / reload (no localStorage check any more).
 export function useIntro() {
-  const [show, setShow] = useState(() => {
-    if (import.meta.env.DEV || new URLSearchParams(window.location.search).has("intro")) return true;
-    try { return !localStorage.getItem(KEY); } catch { return false; }
-  });
-  const done = () => { try { localStorage.setItem(KEY, "1"); } catch {} setShow(false); };
+  const [show, setShow] = useState(true);
+  const done = () => setShow(false);
   return [show, done];
 }
 

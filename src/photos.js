@@ -2,7 +2,6 @@
 // w/h are the picture sizes so the page never jumps while loading.
 const P = [
   ["newborn-foot", 1512, 2016, "Ruhab's tiny foot resting in a hand"],
-  ["newborn-toes", 1125, 1500, "Newborn Ruhab's tiny toes in a hand"],
   ["newborn-finger", 1125, 1500, "Newborn Ruhab gripping a finger"],
   ["newborn-awake", 1932, 2576, "Newborn Ruhab looking at the camera"],
   ["newborn-blue", 1125, 1500, "Newborn Ruhab in blue, wide awake"],
@@ -59,7 +58,6 @@ const P = [
   ["born-hold", 1125, 1500, "Newborn Ruhab wrapped in an orange kantha, held in the hospital corridor"],
   ["born-kantha", 1125, 1500, "Newborn Ruhab snug in an orange kantha"],
   ["born-orange", 1125, 1500, "Tiny newborn Ruhab asleep in an orange kantha and blue cap"],
-  ["born-orange-close", 1125, 1500, "Close-up of newborn Ruhab sleeping in orange"],
   ["born-yellow-hood", 1125, 1500, "Newborn Ruhab in a yellow hood, wide awake with big eyes"],
   ["born-sleep-black", 1125, 1500, "Ruhab sleeping soundly with a full head of black hair"],
   ["play-onion", 960, 1280, "Ruhab grinning beside a basket of onions and garlic"],

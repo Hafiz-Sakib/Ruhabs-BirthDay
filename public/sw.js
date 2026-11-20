@@ -3,7 +3,7 @@
    - /assets/ (hashed JS, CSS, fonts): cache first, they never change under the same name.
    - /photos/ and /icons/: cache first, photos are saved the first time they are seen (size-limited).
    Bump VERSION to throw away every saved file. */
-const VERSION = "v2";
+const VERSION = "v3";
 const SHELL = `ruhab-shell-${VERSION}`;
 const ASSETS = `ruhab-assets-${VERSION}`;
 const MEDIA = `ruhab-media-${VERSION}`;

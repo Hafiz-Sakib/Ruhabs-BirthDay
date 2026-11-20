@@ -72,8 +72,8 @@ export const site = {
 
 // The story: chapters shown in order. `photos` are the ids from src/photos.js. Change titles/notes freely.
 export const chapters = [
-  { title: "Hello, world", note: "Tiny toes, a big yawn and the sweetest first look.", photos: ["born-hold", "born-orange", "born-kantha", "born-orange-close", "newborn-awake", "newborn-blue", "newborn-blue-yawn", "newborn-red", "born-yellow-hood", "newborn-yawn", "newborn-sleep", "born-shoulder", "born-sleep-black", "newborn-cry"] },
-  { title: "Tiny fingers, tiny toes", note: "A grip that melts every heart and toes small enough to hold in one palm.", photos: ["newborn-finger", "newborn-toes", "newborn-fist"] },
+  { title: "Hello, world", note: "Tiny toes, a big yawn and the sweetest first look.", photos: ["born-hold", "born-orange", "born-kantha", "newborn-awake", "newborn-blue", "newborn-blue-yawn", "newborn-red", "born-yellow-hood", "newborn-yawn", "newborn-sleep", "born-shoulder", "born-sleep-black", "newborn-cry"] },
+  { title: "Tiny fingers, tiny toes", note: "A grip that melts every heart and toes small enough to hold in one palm.", photos: ["newborn-finger", "newborn-foot", "newborn-fist"] },
   { title: "Meeting the family", note: "Cuddles, curious cousins and so many hands to hold him.", photos: ["first-hold", "cousins", "born-cousins", "born-selfie", "sleepy-boats"] },
   { title: "The first haircut", note: "A little bit of hair on a banana leaf and a brand new look.", photos: ["haircut-leaf", "haircut-bald"] },
   { title: "Eid and first smiles", note: "His very first Eidi, and a smile that lit up the room.", photos: ["eid-salami", "mama-hug", "smile-pink", "n-shop-mama"] },
